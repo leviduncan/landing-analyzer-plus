@@ -82,6 +82,12 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
 
   // Set up real-time subscription for new audits
   useEffect(() => {
+    let currentUserId: string | null = null;
+    
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      currentUserId = user?.id ?? null;
+    });
+
     const channel = supabase
       .channel('audits-changes')
       .on(
@@ -93,6 +99,11 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
         },
         (payload) => {
           console.log('New audit received via realtime:', payload);
+          // Only add audits for the current user
+          if (!currentUserId || (payload.new as any).user_id !== currentUserId) {
+            console.log('Ignoring audit for different user');
+            return;
+          }
           // Add the new audit to the beginning of the list
           setAudits(prev => [payload.new as any, ...prev].slice(0, 10));
         }
@@ -123,9 +134,9 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
   }
 
   return (
-    <div className="space-y-3" ref={scrollAnimation.ref}>
+    <div className="space-y-3 relative z-10" ref={scrollAnimation.ref}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold animate-slide-up">Recent Audits</h3>
+        <h3 className="text-lg font-semibold animate-slide-up">Recent Audits ({audits.length})</h3>
         <Button
           onClick={handleManualRefresh}
           disabled={refreshing}
@@ -140,7 +151,7 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
       {audits.map((audit, index) => (
         <Card
           key={audit.id}
-          className={`p-4 glass cursor-pointer hover-lift hover-glow group transition-all duration-300 hover:border-primary/50 scroll-reveal ${scrollAnimation.isVisible ? 'revealed' : ''}`}
+          className="p-4 glass cursor-pointer hover-lift hover-glow group transition-all duration-300 hover:border-primary/50 revealed"
           onClick={() => onSelectAudit(audit)}
           style={{ 
             animationDelay: `${index * 0.1}s`,
