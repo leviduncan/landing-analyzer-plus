@@ -18,8 +18,8 @@ const Index = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedAudit, setSelectedAudit] = useState<any>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [profileOpen, setProfileOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

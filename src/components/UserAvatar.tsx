@@ -10,11 +10,16 @@ interface UserAvatarProps {
 }
 
 const getInitials = (name?: string | null, email?: string) => {
-  if (name && name.trim()) {
-    return name.charAt(0).toUpperCase();
+  if (name) {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   }
   if (email) {
-    return email.charAt(0).toUpperCase();
+    return email[0].toUpperCase();
   }
   return "U";
 };
@@ -22,24 +27,30 @@ const getInitials = (name?: string | null, email?: string) => {
 const sizeClasses = {
   sm: "h-8 w-8 text-xs",
   md: "h-10 w-10 text-sm",
-  lg: "h-16 w-16 text-xl",
+  lg: "h-16 w-16 text-lg",
 };
 
-export function UserAvatar({
+export const UserAvatar = ({
   avatarUrl,
   displayName,
   email,
   size = "md",
   className,
-}: UserAvatarProps) {
+}: UserAvatarProps) => {
   const initials = getInitials(displayName, email);
 
   return (
-    <Avatar className={cn(sizeClasses[size], "ring-2 ring-primary/20 transition-all hover:ring-primary/40", className)}>
-      {avatarUrl && <AvatarImage src={avatarUrl} alt={displayName || email || "User avatar"} />}
+    <Avatar
+      className={cn(
+        sizeClasses[size],
+        "ring-2 ring-primary/20 transition-all duration-300 hover:ring-primary/40 hover:scale-105",
+        className
+      )}
+    >
+      <AvatarImage src={avatarUrl || undefined} alt={displayName || email || "User"} />
       <AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-primary-foreground font-semibold">
         {initials}
       </AvatarFallback>
     </Avatar>
   );
-}
+};

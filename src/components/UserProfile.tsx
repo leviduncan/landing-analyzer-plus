@@ -1,67 +1,63 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { UserAvatar } from "./UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { UserAvatar } from "@/components/UserAvatar";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, X } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Upload, Loader2, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface UserProfileProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function UserProfile({ open, onOpenChange }: UserProfileProps) {
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+export const UserProfile = ({ open, onOpenChange }: UserProfileProps) => {
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [displayName, setDisplayName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (open) {
-      loadProfile();
-    }
+    loadUserAndProfile();
   }, [open]);
 
-  const loadProfile = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+  const loadUserAndProfile = async () => {
+    const {
+      data: { user: currentUser },
+    } = await supabase.auth.getUser();
 
-      setUserId(user.id);
-      setEmail(user.email || "");
+    if (currentUser) {
+      setUser(currentUser);
 
-      const { data: profile } = await supabase
+      const { data } = await supabase
         .from("profiles")
-        .select("display_name, avatar_url")
-        .eq("user_id", user.id)
+        .select("*")
+        .eq("user_id", currentUser.id)
         .single();
 
-      if (profile) {
-        setDisplayName(profile.display_name || "");
-        setAvatarUrl(profile.avatar_url);
+      if (data) {
+        setProfile(data);
+        setDisplayName(data.display_name || "");
       }
-    } catch (error) {
-      console.error("Error loading profile:", error);
     }
   };
 
   const uploadAvatar = async (file: File) => {
+    if (!user) return;
+
+    setUploading(true);
     try {
-      setUploading(true);
-
-      if (!userId) {
-        throw new Error("No user ID found");
-      }
-
       const fileExt = file.name.split(".").pop();
-      const filePath = `${userId}/${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
@@ -69,19 +65,26 @@ export function UserProfile({ open, onOpenChange }: UserProfileProps) {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("avatars").getPublicUrl(filePath);
 
-      setAvatarUrl(publicUrl);
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
 
       toast({
-        title: "Avatar uploaded",
-        description: "Your avatar has been uploaded successfully.",
+        title: "Success",
+        description: "Avatar updated successfully",
       });
+
+      loadUserAndProfile();
     } catch (error: any) {
       toast({
-        title: "Upload failed",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -93,10 +96,10 @@ export function UserProfile({ open, onOpenChange }: UserProfileProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      if (file.size > 2097152) {
         toast({
-          title: "File too large",
-          description: "Avatar must be less than 2MB",
+          title: "Error",
+          description: "File size must be less than 2MB",
           variant: "destructive",
         });
         return;
@@ -105,143 +108,141 @@ export function UserProfile({ open, onOpenChange }: UserProfileProps) {
     }
   };
 
-  const removeAvatar = async () => {
+  const handleSave = async () => {
+    if (!user) return;
+
+    setSaving(true);
     try {
-      setAvatarUrl(null);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ display_name: displayName })
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
       toast({
-        title: "Avatar removed",
-        description: "Your avatar has been removed.",
+        title: "Success",
+        description: "Profile updated successfully",
       });
+
+      onOpenChange(false);
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message,
         variant: "destructive",
       });
+    } finally {
+      setSaving(false);
     }
   };
 
-  const saveProfile = async () => {
-    try {
-      setLoading(true);
+  const handleRemoveAvatar = async () => {
+    if (!user) return;
 
+    setUploading(true);
+    try {
       const { error } = await supabase
         .from("profiles")
-        .update({
-          display_name: displayName,
-          avatar_url: avatarUrl,
-        })
-        .eq("user_id", userId);
+        .update({ avatar_url: null })
+        .eq("user_id", user.id);
 
       if (error) throw error;
 
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully.",
+        title: "Success",
+        description: "Avatar removed successfully",
       });
-      onOpenChange(false);
+
+      loadUserAndProfile();
     } catch (error: any) {
       toast({
-        title: "Update failed",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setUploading(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-background/95 backdrop-blur-xl border-white/10">
+      <DialogContent className="sm:max-w-md glass-card border-white/10">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>
-            Update your profile information and avatar
-          </DialogDescription>
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Edit Profile
+          </DialogTitle>
+          <DialogDescription>Update your profile information and avatar</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
           <div className="flex flex-col items-center gap-4">
             <UserAvatar
-              avatarUrl={avatarUrl}
-              displayName={displayName}
-              email={email}
+              avatarUrl={profile?.avatar_url}
+              displayName={profile?.display_name}
+              email={user?.email}
               size="lg"
             />
-            
+
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-              >
-                {uploading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Upload className="h-4 w-4" />
-                )}
-                Upload
-              </Button>
-              
-              {avatarUrl && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={removeAvatar}
+              <Label htmlFor="avatar-upload" className="cursor-pointer">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20">
+                  {uploading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Upload className="h-4 w-4" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {uploading ? "Uploading..." : "Upload Avatar"}
+                  </span>
+                </div>
+                <Input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleFileChange}
                   disabled={uploading}
-                >
+                />
+              </Label>
+
+              {profile?.avatar_url && (
+                <Button variant="ghost" size="icon" onClick={handleRemoveAvatar} disabled={uploading}>
                   <X className="h-4 w-4" />
-                  Remove
                 </Button>
               )}
             </div>
+          </div>
 
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleFileChange}
-              className="hidden"
+          <div className="space-y-2">
+            <Label htmlFor="display-name">Display Name</Label>
+            <Input
+              id="display-name"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Enter your display name"
+              className="glass-card border-white/10"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              value={email}
-              disabled
-              className="bg-muted"
-            />
+            <Input id="email" value={user?.email || ""} disabled className="glass-card border-white/10 opacity-60" />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="displayName">Display Name</Label>
-            <Input
-              id="displayName"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Enter your display name"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-          <Button onClick={saveProfile} disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Save Changes
+          <Button onClick={handleSave} disabled={saving} className="w-full">
+            {saving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </Button>
         </div>
       </DialogContent>
     </Dialog>
   );
-}
+};
