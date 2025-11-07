@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuditHistoryProps {
   onSelectAudit: (audit: any) => void;
@@ -20,13 +22,22 @@ const getScoreColor = (score: number) => {
 export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProps) => {
   const [audits, setAudits] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const scrollAnimation = useScrollAnimation();
+  const { toast } = useToast();
 
-  const fetchAudits = async () => {
+  const fetchAudits = async (isManualRefresh = false) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (isManualRefresh) setRefreshing(true);
+      else setLoading(true);
 
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log("No user found, skipping audit fetch");
+        return;
+      }
+
+      console.log("Fetching audits for user:", user.id);
       const { data, error } = await supabase
         .from("audits")
         .select("*")
@@ -34,18 +45,64 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
         .order("created_at", { ascending: false })
         .limit(10);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching audits:", error);
+        throw error;
+      }
+      
+      console.log("Fetched audits:", data?.length || 0);
       setAudits(data || []);
-    } catch (error) {
+      
+      if (isManualRefresh) {
+        toast({
+          title: "Refreshed",
+          description: `Found ${data?.length || 0} audits`,
+        });
+      }
+    } catch (error: any) {
       console.error("Error fetching audits:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to fetch audits",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleManualRefresh = () => {
+    fetchAudits(true);
   };
 
   useEffect(() => {
     fetchAudits();
   }, [refreshTrigger]);
+
+  // Set up real-time subscription for new audits
+  useEffect(() => {
+    const channel = supabase
+      .channel('audits-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'audits'
+        },
+        (payload) => {
+          console.log('New audit received via realtime:', payload);
+          // Add the new audit to the beginning of the list
+          setAudits(prev => [payload.new as any, ...prev].slice(0, 10));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -67,7 +124,19 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
 
   return (
     <div className="space-y-3" ref={scrollAnimation.ref}>
-      <h3 className="text-lg font-semibold mb-4 animate-slide-up">Recent Audits</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold animate-slide-up">Recent Audits</h3>
+        <Button
+          onClick={handleManualRefresh}
+          disabled={refreshing}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
       {audits.map((audit, index) => (
         <Card
           key={audit.id}

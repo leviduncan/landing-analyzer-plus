@@ -44,7 +44,10 @@ export const AuditForm = ({ onAuditComplete }: AuditFormProps) => {
           description: "Your website audit has been completed successfully.",
         });
         setUrl("");
-        onAuditComplete();
+        // Add a small delay to ensure DB write completes before triggering refresh
+        setTimeout(() => {
+          onAuditComplete();
+        }, 500);
       }
     } catch (error: any) {
       console.error('Audit error:', error);
