@@ -4,6 +4,9 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { ScoreCounter } from "@/components/ui/score-counter";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { toast } from "@/hooks/use-toast";
+import { exportToPDF } from "@/lib/exportToPDF";
+import { useState } from "react";
 import { 
   Search, 
   Zap, 
@@ -52,6 +55,27 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
   const findings = audit.audit_data?.findings || { positive: [], issues: [], recommendations: [] };
   const categoriesScroll = useScrollAnimation();
   const findingsScroll = useScrollAnimation();
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      await exportToPDF(audit);
+      toast({
+        title: "PDF exported successfully",
+        description: "Your audit report has been downloaded.",
+      });
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      toast({
+        title: "Export failed",
+        description: "There was an error generating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -80,9 +104,11 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
             variant="outline" 
             size="sm" 
             className="gap-2 hover-lift transition-all duration-300 hover:border-primary/50 hover:shadow-glow-sm group"
+            onClick={handleExportPDF}
+            disabled={isExporting}
           >
             <Download className="h-4 w-4 transition-transform group-hover:-translate-y-1" />
-            Export PDF
+            {isExporting ? "Exporting..." : "Export PDF"}
           </Button>
           {onDelete && (
             <Button 
