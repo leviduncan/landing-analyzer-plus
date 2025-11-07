@@ -80,7 +80,7 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
         >
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate group-hover:text-primary transition-colors shimmer">{audit.url}</p>
+              <p className="font-medium truncate text-foreground group-hover:text-primary transition-colors shimmer">{audit.url}</p>
               <p className="text-sm text-muted-foreground">
                 {new Date(audit.created_at).toLocaleDateString()}
               </p>
