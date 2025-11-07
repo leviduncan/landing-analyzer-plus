@@ -3,11 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, LogOut } from "lucide-react";
+import { Sparkles, LogOut, Settings } from "lucide-react";
 import { AuditForm } from "@/components/AuditForm";
 import { AuditResults } from "@/components/AuditResults";
 import { AuditHistory } from "@/components/AuditHistory";
 import { FloatingOrbs } from "@/components/ui/floating-orbs";
+import { UserAvatar } from "@/components/UserAvatar";
+import { UserProfile } from "@/components/UserProfile";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -15,6 +18,8 @@ const Index = () => {
   const [user, setUser] = useState<any>(null);
   const [selectedAudit, setSelectedAudit] = useState<any>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -22,6 +27,7 @@ const Index = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        loadProfile(session.user.id);
       }
     });
 
@@ -30,11 +36,24 @@ const Index = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        loadProfile(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadProfile = async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("user_id", userId)
+      .single();
+    
+    if (data) {
+      setProfile(data);
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -96,15 +115,37 @@ const Index = () => {
               Landing Page Auditor Pro
             </h1>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSignOut}
-            className="gap-2 hover-lift border-border/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:shadow-glow-sm"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign Out
-          </Button>
+          
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-auto p-1 hover:bg-white/10 rounded-full transition-all duration-300 hover:ring-2 hover:ring-primary/50">
+                  <UserAvatar
+                    avatarUrl={profile?.avatar_url}
+                    displayName={profile?.display_name}
+                    email={user?.email}
+                  />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 glass-strong border-border/50">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{profile?.display_name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border/50" />
+                <DropdownMenuItem onClick={() => setProfileOpen(true)} className="cursor-pointer hover:bg-primary/10">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Edit Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer hover:bg-destructive/10">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
@@ -151,6 +192,16 @@ const Index = () => {
           </div>
         )}
       </main>
+
+      <UserProfile 
+        open={profileOpen} 
+        onOpenChange={(open) => {
+          setProfileOpen(open);
+          if (!open && user) {
+            loadProfile(user.id);
+          }
+        }} 
+      />
     </div>
   );
 };
