@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
+import { FloatingOrbs } from "@/components/ui/floating-orbs";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -74,19 +75,32 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-secondary">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-background to-secondary relative overflow-hidden">
+      <FloatingOrbs />
+      <div className="absolute inset-0 bg-gradient-mesh opacity-30" />
       <div className="absolute inset-0 bg-gradient-glow opacity-50" />
       
-      <Card className="w-full max-w-md p-8 backdrop-blur-xl bg-card/50 border-border/50 shadow-card relative z-10">
+      {/* Header Section - Above Card */}
+      <div className="text-center mb-8 z-10 animate-fade-in">
+        <div className="inline-flex items-center gap-3 mb-4">
+          <Sparkles className="h-12 w-12 text-primary animate-pulse" />
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent shimmer">
+            Landing Page Auditor
+          </h1>
+        </div>
+        <p className="text-lg text-muted-foreground max-w-2xl px-4">
+          Analyze, optimize, and perfect your landing pages with AI-powered insights
+        </p>
+      </div>
+
+      {/* Auth Card */}
+      <Card className="w-full max-w-md p-8 backdrop-blur-xl bg-card/50 border-border/50 shadow-glow relative z-10 hover-lift animate-scale-in">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Sparkles className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Landing Page Auditor
-            </h1>
-          </div>
-          <p className="text-muted-foreground">
-            {isLogin ? "Sign in to continue" : "Create your account"}
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
+            {isLogin ? "Welcome Back" : "Get Started"}
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {isLogin ? "Sign in to continue your analysis" : "Create your account to begin"}
           </p>
         </div>
 
@@ -98,7 +112,7 @@ const Auth = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-secondary/50 border-border"
+              className="bg-secondary/50 border-border focus:border-primary focus:shadow-primary transition-all"
             />
           </div>
           <div>
@@ -109,14 +123,14 @@ const Auth = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="bg-secondary/50 border-border"
+              className="bg-secondary/50 border-border focus:border-primary focus:shadow-primary transition-all"
             />
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-primary"
+            className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-primary hover:scale-105"
           >
             {loading ? (
               <>
