@@ -60,32 +60,40 @@ export const AuditForm = ({ onAuditComplete }: AuditFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
-      <div className="flex gap-2">
+      <div className="flex gap-2 p-2 rounded-xl glass border-gradient-animated">
         <Input
           type="text"
           placeholder="Enter website URL (e.g., example.com)"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           disabled={loading}
-          className="flex-1 bg-secondary/50 border-border h-12 text-base"
+          className="flex-1 glass-strong border-0 h-12 text-base focus:ring-2 focus:ring-primary/50 transition-all duration-300 focus:shadow-glow-sm"
         />
         <Button
           type="submit"
           disabled={loading}
           size="lg"
-          className="bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-primary"
+          className="bg-gradient-to-r from-primary to-primary-glow hover:shadow-glow-md transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
         >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Analyzing...
-            </>
-          ) : (
-            <>
-              <Search className="mr-2 h-4 w-4" />
-              Audit Now
-            </>
-          )}
+          <span className="relative z-10 flex items-center">
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Analyzing
+                <span className="inline-flex ml-1">
+                  <span className="animate-bounce" style={{ animationDelay: '0s' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>.</span>
+                  <span className="animate-bounce" style={{ animationDelay: '0.4s' }}>.</span>
+                </span>
+              </>
+            ) : (
+              <>
+                <Search className="mr-2 h-4 w-4 transition-transform group-hover:rotate-12" />
+                Audit Now
+              </>
+            )}
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-glow to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </Button>
       </div>
     </form>
