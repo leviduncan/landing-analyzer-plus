@@ -1,0 +1,24 @@
+name: Deploy Website on push
+
+on:
+  push:
+    branches:
+      - main # or the branch you want to deploy from
+jobs:
+  web-deploy:
+    name: Deploy
+    runs-on: ubuntu-latest 
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Get latest code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up SSH and deploy the out folder
+      - name: Deploy out folder to server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: dist/
