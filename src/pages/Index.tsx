@@ -154,7 +154,7 @@ const Index = () => {
         {/* Hero Section */}
         {!selectedAudit && (
           <div className="text-center mb-12 space-y-4 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 animate-float bg-gradient-to-r from-foreground via-primary-glow to-foreground bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 animate-float bg-gradient-to-r from-foreground via-primary-glow to-foreground bg-clip-text text-transparent pb-6">
               Boost Your Landing Page Performance
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
