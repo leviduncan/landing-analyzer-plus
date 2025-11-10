@@ -84,7 +84,7 @@ const Auth = () => {
       <div className="text-center mb-8 z-10 animate-fade-in">
         <div className="inline-flex items-center gap-3 mb-4">
           <Sparkles className="h-12 w-12 text-primary animate-pulse" />
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent shimmer">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary bg-clip-text text-transparent pb-6 animate-pulse">
             Landing Page Auditor
           </h1>
         </div>
