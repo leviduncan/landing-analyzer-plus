@@ -1,24 +1,46 @@
-name: Deploy Website on push
+name: Deploy Vite Site via SFTP
 
 on:
   push:
     branches:
-      - main # or the branch you want to deploy from
+      - main  # Change if needed
+
 jobs:
-  web-deploy:
-    name: Deploy
-    runs-on: ubuntu-latest 
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code
-      - name: Get latest code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up SSH and deploy the out folder
-      - name: Deploy out folder to server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          local-dir: dist/
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vite site
+        run: npm run build
+
+      - name: Deploy via SFTP
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          source: "dist/*"
+          target: "/srv/landingpageauditor"
+
+      - name: Reload Caddy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            sudo systemctl reload caddy
+
