@@ -95,6 +95,51 @@ export type Database = {
         }
         Relationships: []
       }
+      risk_snapshots: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          issues: Json | null
+          overall_risk: string
+          pdf_generated: boolean | null
+          raw_signals: Json | null
+          recommendations: Json | null
+          risk_breakdown: Json | null
+          strengths: Json | null
+          url: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          issues?: Json | null
+          overall_risk?: string
+          pdf_generated?: boolean | null
+          raw_signals?: Json | null
+          recommendations?: Json | null
+          risk_breakdown?: Json | null
+          strengths?: Json | null
+          url: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          issues?: Json | null
+          overall_risk?: string
+          pdf_generated?: boolean | null
+          raw_signals?: Json | null
+          recommendations?: Json | null
+          risk_breakdown?: Json | null
+          strengths?: Json | null
+          url?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
