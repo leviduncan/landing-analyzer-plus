@@ -126,7 +126,7 @@ Deno.serve(async (req) => {
   }
 });
 
-function parseHtmlSignals(html: string, _url: string): Record<string, unknown> {
+function parseHtmlSignals(html: string, url: string): Record<string, unknown> {
   const signals: Record<string, unknown> = {};
 
   // Title
