@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { RiskBadge } from "./RiskBadge";
-import { 
-  CheckCircle, 
-  AlertTriangle, 
-  ArrowRight, 
+import {
+  CheckCircle,
+  AlertTriangle,
+  ArrowRight,
   Download,
   Calendar,
   Zap,
@@ -68,8 +68,8 @@ export function FullReport({ data, onExportPdf, isPdfLoading }: FullReportProps)
           <h1 className="text-2xl font-bold text-foreground">Risk Snapshot Report</h1>
           <p className="text-muted-foreground">{data.url}</p>
           <p className="text-sm text-muted-foreground">
-            Generated {new Date(data.created_at).toLocaleDateString('en-US', { 
-              year: 'numeric', month: 'long', day: 'numeric' 
+            Generated {new Date(data.created_at).toLocaleDateString('en-US', {
+              year: 'numeric', month: 'long', day: 'numeric'
             })}
           </p>
         </div>
@@ -263,7 +263,7 @@ export function FullReport({ data, onExportPdf, isPdfLoading }: FullReportProps)
       <Card className="border">
         <CardContent className="py-4">
           <p className="text-xs text-muted-foreground text-center">
-            <strong>Disclaimer:</strong> This is an automated signals-based diagnostic and does not replace a professional audit. 
+            <strong>Disclaimer:</strong> This is an automated signals-based diagnostic and does not replace a professional audit.
             Results are based on observable page characteristics at the time of analysis and may not reflect all aspects of your page's performance.
           </p>
         </CardContent>
@@ -274,12 +274,14 @@ export function FullReport({ data, onExportPdf, isPdfLoading }: FullReportProps)
         <CardContent className="py-8 text-center">
           <h3 className="text-xl font-semibold mb-2">Want a Deeper Analysis?</h3>
           <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
-            Schedule a call to discuss a comprehensive Performance & Core Web Vitals audit 
+            Schedule a call to discuss a comprehensive Performance & Core Web Vitals audit
             tailored to your specific goals and technical environment.
           </p>
-          <Button size="lg">
-            <Calendar className="mr-2 h-4 w-4" />
-            Request a Performance Audit Call
+          <Button asChild size="lg">
+            <a href="/contact">
+              <Calendar className="mr-2 h-4 w-4" />
+              Request a Performance Audit Call
+            </a>
           </Button>
         </CardContent>
       </Card>

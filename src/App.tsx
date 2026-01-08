@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import RiskSnapshot from "./pages/RiskSnapshot";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/risk-snapshot" replace />} />
           <Route path="/risk-snapshot" element={<RiskSnapshot />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -5,7 +5,7 @@ export function SnapshotHero() {
         Frontend Performance & UX Risk Snapshot
       </h1>
       <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-        Get a signals-based diagnostic of your landing page's performance, SEO, accessibility, and conversion readiness—no login required.
+        Get a signals-based diagnostic of your landing page's performance, SEO, accessibility, and conversion readiness, no login required.
       </p>
     </header>
   );
