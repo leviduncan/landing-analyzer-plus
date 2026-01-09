@@ -51,18 +51,18 @@ export function SnapshotSummary({ data, onGetFullReport }: SnapshotSummaryProps)
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6 animate-slide-up">
+    <div className="w-full max-w-3xl mx-auto space-y-8 animate-slide-up">
       {/* Overall Risk */}
-      <Card className="border shadow-card">
-        <CardHeader className="text-center pb-2">
-          <p className="text-sm text-muted-foreground mb-2">
-            Analysis for <span className="font-medium text-foreground">{data.url}</span>
+      <Card className="border shadow-card hover-lift gradient-border overflow-hidden">
+        <CardHeader className="text-center pb-3 pt-8">
+          <p className="text-sm text-muted-foreground mb-3">
+            Analysis for <span className="font-semibold text-foreground">{data.url}</span>
           </p>
-          <CardTitle className="text-xl">Overall Risk Level</CardTitle>
+          <CardTitle className="text-2xl font-bold">Overall Risk Level</CardTitle>
         </CardHeader>
-        <CardContent className="text-center">
-          <RiskBadge level={data.overall_risk} size="lg" className="mb-4" />
-          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+        <CardContent className="text-center pb-8">
+          <RiskBadge level={data.overall_risk} size="lg" className="mb-5" />
+          <p className="text-muted-foreground text-sm max-w-md mx-auto leading-relaxed">
             {data.overall_risk === "high" && "Multiple areas need attention to improve user experience and performance."}
             {data.overall_risk === "moderate" && "Some improvement opportunities exist that could enhance performance."}
             {data.overall_risk === "low" && "Fundamentals look solid. Minor optimizations may still be beneficial."}
@@ -73,20 +73,22 @@ export function SnapshotSummary({ data, onGetFullReport }: SnapshotSummaryProps)
       <div className="grid md:grid-cols-2 gap-6">
         {/* Top Risks */}
         {topRisks.length > 0 && (
-          <Card className="border shadow-card">
-            <CardHeader className="pb-3">
+          <Card className="border shadow-card hover-lift">
+            <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-risk-moderate" />
+                <div className="p-2 rounded-lg bg-warning/10">
+                  <AlertTriangle className="h-5 w-5 text-warning" />
+                </div>
                 Key Risk Areas
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               {topRisks.map(([key, category]) => (
-                <div key={key} className="flex items-start gap-3">
+                <div key={key} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
                   <RiskBadge level={category.level} size="sm" />
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm">{categoryLabels[key]}</p>
-                    <p className="text-xs text-muted-foreground">{category.signals[0]}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{category.signals[0]}</p>
                   </div>
                 </div>
               ))}
@@ -96,18 +98,20 @@ export function SnapshotSummary({ data, onGetFullReport }: SnapshotSummaryProps)
 
         {/* Strengths */}
         {data.strengths.length > 0 && (
-          <Card className="border shadow-card">
-            <CardHeader className="pb-3">
+          <Card className="border shadow-card hover-lift">
+            <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-risk-low" />
+                <div className="p-2 rounded-lg bg-success/10">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                </div>
                 What's Working
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3">
               {data.strengths.slice(0, 4).map((strength, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-risk-low mt-0.5 shrink-0" />
-                  <p className="text-sm text-muted-foreground">{strength}</p>
+                <div key={idx} className="flex items-start gap-3">
+                  <CheckCircle className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">{strength}</p>
                 </div>
               ))}
             </CardContent>
@@ -122,11 +126,15 @@ export function SnapshotSummary({ data, onGetFullReport }: SnapshotSummaryProps)
 
       {/* CTA */}
       <div className="text-center pt-4">
-        <Button size="lg" onClick={onGetFullReport} className="px-8">
-          <FileText className="mr-2 h-4 w-4" />
+        <Button 
+          size="lg" 
+          onClick={onGetFullReport} 
+          className="px-10 py-6 text-base rounded-full bg-gradient-primary hover:opacity-90 shadow-lg hover:shadow-xl transition-all"
+        >
+          <FileText className="mr-2 h-5 w-5" />
           Get Full Report + PDF
         </Button>
-        <p className="text-xs text-muted-foreground mt-2">
+        <p className="text-sm text-muted-foreground mt-3">
           Unlock detailed findings, recommendations, and downloadable report
         </p>
       </div>

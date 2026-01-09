@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2, Mail, FileText, Sparkles } from "lucide-react";
 
 interface EmailGateModalProps {
   open: boolean;
@@ -45,16 +45,25 @@ export function EmailGateModal({ open, onOpenChange, onSubmit, isLoading }: Emai
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Get Your Full Report</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-md overflow-hidden">
+        {/* Gradient top border */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-primary" />
+        
+        <DialogHeader className="pt-4">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-gradient-primary-subtle">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
+            <DialogTitle className="text-xl">Get Your Full Report</DialogTitle>
+          </div>
+          <DialogDescription className="text-base">
             Enter your email to unlock the complete analysis, detailed recommendations, and downloadable PDF.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        
+        <form onSubmit={handleSubmit} className="space-y-5 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+            <Label htmlFor="email" className="text-sm font-medium">Email address</Label>
             <Input
               id="email"
               type="email"
@@ -65,11 +74,16 @@ export function EmailGateModal({ open, onOpenChange, onSubmit, isLoading }: Emai
                 setError("");
               }}
               disabled={isLoading}
-              className={error ? "border-destructive" : ""}
+              className={`h-12 text-base ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
             {error && <p className="text-sm text-destructive">{error}</p>}
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          
+          <Button 
+            type="submit" 
+            className="w-full h-12 rounded-full bg-gradient-primary hover:opacity-90 text-base font-semibold" 
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -82,9 +96,11 @@ export function EmailGateModal({ open, onOpenChange, onSubmit, isLoading }: Emai
               </>
             )}
           </Button>
-          <p className="text-xs text-muted-foreground text-center">
-            No spam. Your email is only used to send your report.
-          </p>
+          
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <Sparkles className="h-3 w-3" />
+            <span>No spam. Your email is only used to send your report.</span>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
