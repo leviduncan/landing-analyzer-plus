@@ -169,6 +169,22 @@ export default function RiskSnapshot() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Subtle background pattern */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 right-0 w-[800px] h-[800px] opacity-[0.03]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-start)) 0%, transparent 70%)'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-0 w-[600px] h-[600px] opacity-[0.03]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-end)) 0%, transparent 70%)'
+          }}
+        />
+      </div>
+
       <div className="container max-w-5xl mx-auto px-4 py-8">
         {/* Header */}
         <SnapshotHero />
@@ -179,10 +195,10 @@ export default function RiskSnapshot() {
             <UrlInputForm onSubmit={handleAnalyze} isLoading={isAnalyzing} />
           ) : isUnlocked ? (
             <>
-              <div className="mb-6">
+              <div className="mb-8">
                 <button 
                   onClick={handleReset}
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-primary hover:underline font-medium flex items-center gap-1 transition-colors"
                 >
                   ← Analyze another URL
                 </button>
@@ -213,9 +229,13 @@ export default function RiskSnapshot() {
         />
 
         {/* Footer */}
-        <footer className="mt-16 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>Frontend Performance & UX Risk Snapshot</p>
-          <p className="mt-1">A diagnostic tool for landing page optimization</p>
+        <footer className="mt-20 pt-8 border-t border-border/50 text-center">
+          <p className="text-sm text-muted-foreground font-medium">
+            Frontend Performance & UX Risk Snapshot
+          </p>
+          <p className="text-xs text-muted-foreground/70 mt-1">
+            A diagnostic tool for landing page optimization
+          </p>
         </footer>
       </div>
     </div>

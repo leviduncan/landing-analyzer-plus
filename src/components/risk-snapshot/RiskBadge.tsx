@@ -14,15 +14,15 @@ export function RiskBadge({ level, size = "md", className }: RiskBadgeProps) {
   };
 
   const sizeClasses = {
-    sm: "px-2 py-0.5 text-xs",
-    md: "px-3 py-1 text-sm",
-    lg: "px-4 py-2 text-base font-medium",
+    sm: "px-2.5 py-1 text-xs",
+    md: "px-3.5 py-1.5 text-sm",
+    lg: "px-5 py-2.5 text-base font-semibold",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full font-medium text-white",
+        "inline-flex items-center rounded-full font-medium text-white shadow-sm",
         level === "low" && "bg-risk-low",
         level === "moderate" && "bg-risk-moderate",
         level === "high" && "bg-risk-high",

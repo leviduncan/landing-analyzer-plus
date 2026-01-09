@@ -3,38 +3,39 @@
 @tailwind utilities;
 
 /* 
- * Light Professional Theme
+ * Neil Patel-Inspired Professional Theme
  * Frontend Performance & UX Risk Snapshot
+ * Purple-to-Pink Gradient Accent
  */
 
 @layer base {
   :root {
     /* Light backgrounds */
-    --background: 40 20% 98%;
+    --background: 0 0% 100%;
     --foreground: 222 47% 11%;
 
-    /* White cards with subtle warmth */
+    /* White cards */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Professional blue accent */
-    --primary: 217 91% 50%;
+    /* Purple primary (gradient start) */
+    --primary: 270 60% 55%;
     --primary-foreground: 0 0% 100%;
 
+    /* Pink accent (gradient end) */
+    --accent: 340 75% 55%;
+    --accent-foreground: 0 0% 100%;
+
     /* Subtle secondary */
-    --secondary: 210 40% 96%;
+    --secondary: 240 5% 96%;
     --secondary-foreground: 222 47% 20%;
 
     /* Muted elements */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 20% 45%;
-
-    /* Accent matches primary */
-    --accent: 217 91% 50%;
-    --accent-foreground: 0 0% 100%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 220 9% 46%;
 
     /* Status colors */
     --destructive: 0 84% 50%;
@@ -47,9 +48,9 @@
     --warning-foreground: 0 0% 100%;
 
     /* Borders and inputs */
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 50%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 270 60% 55%;
 
     --radius: 0.5rem;
 
@@ -58,14 +59,36 @@
     --risk-moderate: 38 92% 45%;
     --risk-high: 0 84% 50%;
 
-    /* Subtle shadows */
+    /* Gradient colors */
+    --gradient-start: 270 60% 55%;
+    --gradient-end: 340 75% 55%;
+
+    /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 }
 
 @layer utilities {
+  /* Gradient backgrounds */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+  }
+
+  .bg-gradient-primary-subtle {
+    background: linear-gradient(135deg, hsl(var(--gradient-start) / 0.1), hsl(var(--gradient-end) / 0.1));
+  }
+
+  /* Gradient text */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   /* Risk level backgrounds */
   .bg-risk-low {
     background-color: hsl(var(--risk-low));
@@ -98,7 +121,23 @@
 
   .hover-lift:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Gradient border */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 }
 

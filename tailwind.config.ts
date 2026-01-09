@@ -60,6 +60,10 @@ export default {
           moderate: "hsl(var(--risk-moderate))",
           high: "hsl(var(--risk-high))",
         },
+        gradient: {
+          start: "hsl(var(--gradient-start))",
+          end: "hsl(var(--gradient-end))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -68,6 +72,13 @@ export default {
       },
       boxShadow: {
         'card': 'var(--shadow-md)',
+        'card-hover': 'var(--shadow-lg)',
+        'input': '0 2px 8px -2px rgb(0 0 0 / 0.08)',
+        'input-focus': '0 4px 12px -2px rgb(0 0 0 / 0.12)',
+      },
+      fontSize: {
+        'hero': ['3.5rem', { lineHeight: '1.1', fontWeight: '800' }],
+        'hero-lg': ['4.5rem', { lineHeight: '1.05', fontWeight: '800' }],
       },
       keyframes: {
         "accordion-down": {
@@ -86,12 +97,17 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         "slide-up": "slide-up 0.4s ease-out",
+        "float": "float 6s ease-in-out infinite",
       },
     },
   },
