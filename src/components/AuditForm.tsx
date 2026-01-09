@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 
 interface AuditFormProps {
   onAuditComplete: () => void;
@@ -63,41 +63,40 @@ export const AuditForm = ({ onAuditComplete }: AuditFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
-      <div className="flex gap-2 p-2 rounded-xl glass border-gradient-animated">
+      {/* Unified pill-shaped input container */}
+      <div className="flex items-center bg-card rounded-full shadow-lg border border-border p-1.5 md:p-2 transition-shadow hover:shadow-xl focus-within:shadow-xl focus-within:ring-2 focus-within:ring-primary/20">
         <Input
           type="text"
           placeholder="Enter website URL (e.g., example.com)"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           disabled={loading}
-          className="flex-1 glass-strong border-0 h-12 text-base focus:ring-2 focus:ring-primary/50 transition-all duration-300 focus:shadow-glow-sm"
+          className="flex-1 h-12 md:h-14 text-base border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-4 md:px-6 placeholder:text-muted-foreground/60"
         />
         <Button
           type="submit"
           disabled={loading}
-          size="lg"
-          className="bg-gradient-to-r from-primary to-primary-glow hover:shadow-glow-md transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
+          className="h-12 md:h-14 px-6 md:px-8 rounded-full bg-gradient-primary hover:opacity-90 text-white font-semibold text-sm md:text-base transition-all shadow-md hover:shadow-lg whitespace-nowrap"
         >
-          <span className="relative z-10 flex items-center">
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing
-                <span className="inline-flex ml-1">
-                  <span className="animate-bounce" style={{ animationDelay: '0s' }}>.</span>
-                  <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>.</span>
-                  <span className="animate-bounce" style={{ animationDelay: '0.4s' }}>.</span>
-                </span>
-              </>
-            ) : (
-              <>
-                <Search className="mr-2 h-4 w-4 transition-transform group-hover:rotate-12" />
-                Audit Now
-              </>
-            )}
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-glow to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span className="hidden sm:inline">Analyzing...</span>
+              <span className="sm:hidden">...</span>
+            </>
+          ) : (
+            <>
+              <span className="hidden sm:inline">AUDIT NOW</span>
+              <span className="sm:hidden">AUDIT</span>
+            </>
+          )}
         </Button>
+      </div>
+      
+      {/* Helper text */}
+      <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
+        <Sparkles className="h-4 w-4 text-primary" />
+        <span>AI-powered analysis • Comprehensive insights • Instant results</span>
       </div>
     </form>
   );

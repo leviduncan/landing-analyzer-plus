@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Loader2, X } from "lucide-react";
+import { Upload, Loader2, X, User } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -168,11 +168,17 @@ export const UserProfile = ({ open, onOpenChange }: UserProfileProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md glass-card border-white/10">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Edit Profile
-          </DialogTitle>
+      <DialogContent className="sm:max-w-md border shadow-xl overflow-hidden">
+        {/* Gradient top border */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-primary" />
+        
+        <DialogHeader className="pt-4">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="p-2 rounded-lg bg-gradient-primary-subtle">
+              <User className="h-5 w-5 text-primary" />
+            </div>
+            <DialogTitle className="text-xl font-bold">Edit Profile</DialogTitle>
+          </div>
           <DialogDescription>Update your profile information and avatar</DialogDescription>
         </DialogHeader>
 
@@ -187,13 +193,13 @@ export const UserProfile = ({ open, onOpenChange }: UserProfileProps) => {
 
             <div className="flex gap-2">
               <Label htmlFor="avatar-upload" className="cursor-pointer">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20">
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-primary-subtle hover:bg-primary/20 transition-colors border border-primary/20">
                   {uploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
                   ) : (
-                    <Upload className="h-4 w-4" />
+                    <Upload className="h-4 w-4 text-primary" />
                   )}
-                  <span className="text-sm font-medium">
+                  <span className="text-sm font-medium text-primary">
                     {uploading ? "Uploading..." : "Upload Avatar"}
                   </span>
                 </div>
@@ -208,7 +214,13 @@ export const UserProfile = ({ open, onOpenChange }: UserProfileProps) => {
               </Label>
 
               {profile?.avatar_url && (
-                <Button variant="ghost" size="icon" onClick={handleRemoveAvatar} disabled={uploading}>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={handleRemoveAvatar} 
+                  disabled={uploading}
+                  className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+                >
                   <X className="h-4 w-4" />
                 </Button>
               )}
@@ -216,22 +228,31 @@ export const UserProfile = ({ open, onOpenChange }: UserProfileProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="display-name">Display Name</Label>
+            <Label htmlFor="display-name" className="text-sm font-medium">Display Name</Label>
             <Input
               id="display-name"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Enter your display name"
-              className="glass-card border-white/10"
+              className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" value={user?.email || ""} disabled className="glass-card border-white/10 opacity-60" />
+            <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+            <Input 
+              id="email" 
+              value={user?.email || ""} 
+              disabled 
+              className="h-12 bg-muted/50 border-border opacity-60" 
+            />
           </div>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full">
+          <Button 
+            onClick={handleSave} 
+            disabled={saving} 
+            className="w-full h-12 rounded-full bg-gradient-primary hover:opacity-90 font-semibold"
+          >
             {saving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

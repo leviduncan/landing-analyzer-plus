@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles } from "lucide-react";
-import { FloatingOrbs } from "@/components/ui/floating-orbs";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -75,28 +74,42 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-background via-background to-secondary relative overflow-hidden">
-      <FloatingOrbs />
-      <div className="absolute inset-0 bg-gradient-mesh opacity-30" />
-      <div className="absolute inset-0 bg-gradient-glow opacity-50" />
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute -top-32 -right-32 w-[600px] h-[600px] opacity-[0.08]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-start)) 0%, transparent 70%)'
+          }}
+        />
+        <div 
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] opacity-[0.08]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-end)) 0%, transparent 70%)'
+          }}
+        />
+      </div>
       
       {/* Header Section - Above Card */}
-      <div className="text-center mb-8 z-10 animate-fade-in">
+      <div className="text-center mb-10 z-10 animate-fade-in">
         <div className="inline-flex items-center gap-3 mb-4">
-          <Sparkles className="h-12 w-12 text-primary animate-pulse" />
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary bg-clip-text text-transparent pb-6 animate-pulse">
-            Landing Page Auditor
-          </h1>
+          <div className="p-3 rounded-xl bg-gradient-primary shadow-glow">
+            <Sparkles className="h-8 w-8 text-white" />
+          </div>
         </div>
-        <p className="text-lg text-muted-foreground max-w-2xl px-4">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-3">
+          <span className="text-gradient-primary">Landing Page Auditor</span>
+        </h1>
+        <p className="text-lg text-muted-foreground max-w-md px-4">
           Analyze, optimize, and perfect your landing pages with AI-powered insights
         </p>
       </div>
 
       {/* Auth Card */}
-      <Card className="w-full max-w-md p-8 backdrop-blur-xl bg-card/50 border-border/50 shadow-glow relative z-10 hover-lift animate-scale-in">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
+      <Card className="w-full max-w-md p-8 border shadow-lg hover-lift animate-scale-in gradient-border overflow-hidden">
+        <div className="text-center mb-8 pt-2">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
             {isLogin ? "Welcome Back" : "Get Started"}
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -112,7 +125,7 @@ const Auth = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-secondary/50 border-border focus:border-primary focus:shadow-primary transition-all"
+              className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
           <div>
@@ -123,14 +136,14 @@ const Auth = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="bg-secondary/50 border-border focus:border-primary focus:shadow-primary transition-all"
+              className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
 
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 transition-all duration-300 hover:shadow-primary hover:scale-105"
+            className="w-full h-12 rounded-full bg-gradient-primary hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg text-base font-semibold"
           >
             {loading ? (
               <>

@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, FileText } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -117,60 +117,73 @@ export const AuditHistory = ({ onSelectAudit, refreshTrigger }: AuditHistoryProp
 
   if (loading) {
     return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-primary animate-glow-pulse" />
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (audits.length === 0) {
     return (
-      <Card className="p-8 text-center glass animate-bounce-in">
+      <Card className="p-8 md:p-12 text-center border shadow-card animate-bounce-in">
+        <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">
+          <FileText className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">No audits yet</h3>
         <p className="text-muted-foreground">
-          No audits yet. Start by auditing your first website!
+          Start by auditing your first website above!
         </p>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-3 relative z-10" ref={scrollAnimation.ref}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold animate-slide-up">Recent Audits ({audits.length})</h3>
+    <div className="space-y-4 relative z-10" ref={scrollAnimation.ref}>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold animate-slide-up">Recent Audits ({audits.length})</h3>
         <Button
           onClick={handleManualRefresh}
           disabled={refreshing}
           variant="outline"
           size="sm"
-          className="gap-2"
+          className="gap-2 rounded-full px-4 hover:border-primary/50"
         >
           <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>
-      {audits.map((audit, index) => (
-        <Card
-          key={audit.id}
-          className="p-4 glass cursor-pointer hover-lift hover-glow group transition-all duration-300 hover:border-primary/50 revealed"
-          onClick={() => onSelectAudit(audit)}
-          style={{ 
-            animationDelay: `${index * 0.1}s`,
-            animationFillMode: 'both'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate text-foreground group-hover:text-primary transition-colors shimmer">{audit.url}</p>
-              <p className="text-sm text-muted-foreground">
-                {new Date(audit.created_at).toLocaleDateString()}
-              </p>
+      
+      <div className="space-y-3">
+        {audits.map((audit, index) => (
+          <Card
+            key={audit.id}
+            className="p-4 md:p-5 border shadow-card cursor-pointer hover-lift hover:border-primary/30 group transition-all duration-300 revealed"
+            onClick={() => onSelectAudit(audit)}
+            style={{ 
+              animationDelay: `${index * 0.1}s`,
+              animationFillMode: 'both'
+            }}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold truncate text-foreground group-hover:text-primary transition-colors">
+                  {audit.url}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {new Date(audit.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+              <Badge className={`${getScoreColor(audit.overall_score)} transition-transform group-hover:scale-110 font-semibold text-sm px-3 py-1`}>
+                {audit.overall_score}
+              </Badge>
             </div>
-            <Badge className={`${getScoreColor(audit.overall_score)} transition-transform group-hover:scale-110 animate-scale-pulse`}>
-              {audit.overall_score}
-            </Badge>
-          </div>
-        </Card>
-      ))}
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

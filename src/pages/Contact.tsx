@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -72,16 +73,32 @@ const Contact = () => {
   };
 
   return (
-    <section className="py-24 pt-32 bg-background min-h-screen">
+    <section className="py-24 pt-32 bg-background min-h-screen relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 right-0 w-[600px] h-[600px] opacity-[0.05]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-start)) 0%, transparent 70%)'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-0 w-[500px] h-[500px] opacity-[0.05]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-end)) 0%, transparent 70%)'
+          }}
+        />
+      </div>
+
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bebas text-foreground mb-4">
-              Book a Performance Audit Call
+          <div className="text-center mb-12 animate-fade-in">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
+              Book a <span className="text-gradient-primary">Performance Audit</span> Call
             </h1>
-            <div className="w-16 h-0.5 bg-primary mx-auto mb-6" />
-            <p className="text-muted-foreground">
+            <div className="w-20 h-1 bg-gradient-primary mx-auto mb-6 rounded-full" />
+            <p className="text-lg text-muted-foreground">
               Let's discuss your frontend challenges and how I can help.
             </p>
           </div>
@@ -90,7 +107,7 @@ const Contact = () => {
           <div className="flex flex-wrap justify-center gap-6 mb-12">
             <a
               href="mailto:darrin@darrinduncan.com"
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors px-4 py-2 rounded-full bg-muted/50 hover:bg-muted"
             >
               <Mail className="w-5 h-5" />
               <span>darrin@darrinduncan.com</span>
@@ -99,7 +116,7 @@ const Contact = () => {
               href="https://linkedin.com/in/darrinduncan"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors px-4 py-2 rounded-full bg-muted/50 hover:bg-muted"
             >
               <Linkedin className="w-5 h-5" />
               <span>LinkedIn</span>
@@ -108,24 +125,24 @@ const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="glass-card p-8 rounded-lg">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <Card className="p-8 border shadow-lg hover-lift gradient-border overflow-hidden animate-scale-in">
+            <form onSubmit={handleSubmit} className="space-y-6 pt-2">
               {/* Name & Email Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-foreground text-sm">Name</Label>
+                  <Label htmlFor="name" className="text-foreground text-sm font-medium">Name</Label>
                   <Input
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="bg-background border-border focus:border-primary"
+                    className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
                     placeholder="Your name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-foreground text-sm">Email</Label>
+                  <Label htmlFor="email" className="text-foreground text-sm font-medium">Email</Label>
                   <Input
                     id="email"
                     name="email"
@@ -133,7 +150,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="bg-background border-border focus:border-primary"
+                    className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
                     placeholder="your.email@company.com"
                   />
                 </div>
@@ -141,51 +158,51 @@ const Contact = () => {
 
               {/* Site URL */}
               <div className="space-y-2">
-                <Label htmlFor="siteUrl" className="text-foreground text-sm">Site URL</Label>
+                <Label htmlFor="siteUrl" className="text-foreground text-sm font-medium">Site URL</Label>
                 <Input
                   id="siteUrl"
                   name="siteUrl"
                   value={formData.siteUrl}
                   onChange={handleChange}
                   required
-                  className="bg-background border-border focus:border-primary"
+                  className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
                   placeholder="https://yoursite.com"
                 />
               </div>
 
               {/* Biggest Issue */}
               <div className="space-y-2">
-                <Label htmlFor="biggestIssue" className="text-foreground text-sm">Biggest Issue</Label>
+                <Label htmlFor="biggestIssue" className="text-foreground text-sm font-medium">Biggest Issue</Label>
                 <Input
                   id="biggestIssue"
                   name="biggestIssue"
                   value={formData.biggestIssue}
                   onChange={handleChange}
                   required
-                  className="bg-background border-border focus:border-primary"
+                  className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
                   placeholder="e.g., Slow checkout, Core Web Vitals failures, frequent regressions"
                 />
               </div>
 
               {/* Timeline */}
               <div className="space-y-2">
-                <Label htmlFor="timeline" className="text-foreground text-sm">
-                  Timeline/Urgency <span className="text-muted-foreground">(optional)</span>
+                <Label htmlFor="timeline" className="text-foreground text-sm font-medium">
+                  Timeline/Urgency <span className="text-muted-foreground font-normal">(optional)</span>
                 </Label>
                 <Input
                   id="timeline"
                   name="timeline"
                   value={formData.timeline}
                   onChange={handleChange}
-                  className="bg-background border-border focus:border-primary"
+                  className="h-12 bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
                   placeholder="e.g., Before Q4 peak, ASAP, Exploring options"
                 />
               </div>
 
               {/* Message */}
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-foreground text-sm">
-                  Additional Context <span className="text-muted-foreground">(optional)</span>
+                <Label htmlFor="message" className="text-foreground text-sm font-medium">
+                  Additional Context <span className="text-muted-foreground font-normal">(optional)</span>
                 </Label>
                 <Textarea
                   id="message"
@@ -193,7 +210,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   rows={4}
-                  className="bg-background border-border focus:border-primary resize-none"
+                  className="bg-muted/50 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"
                   placeholder="Any other details that would help me understand your situation..."
                 />
               </div>
@@ -203,22 +220,22 @@ const Contact = () => {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                className="w-full h-14 rounded-full bg-gradient-primary hover:opacity-90 text-base font-semibold shadow-md hover:shadow-lg transition-all"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+                    <Loader2 className="mr-2 w-5 h-5 animate-spin" />
                     Sending...
                   </>
                 ) : (
                   <>
-                    <Send className="mr-2 w-4 h-4" />
+                    <Send className="mr-2 w-5 h-5" />
                     Request Audit Call
                   </>
                 )}
               </Button>
             </form>
-          </div>
+          </Card>
         </div>
       </div>
     </section>
