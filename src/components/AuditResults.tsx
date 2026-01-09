@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -80,44 +80,44 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="p-6 glass-strong border-gradient-animated hover-glow animate-slide-up">
-        <div className="flex items-center justify-between mb-4">
+      <Card className="p-6 md:p-8 border shadow-lg hover-lift gradient-border overflow-hidden animate-slide-up">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pt-2">
           <div className="animate-fade-in">
-            <h2 className="text-2xl font-bold mb-2 shimmer">{audit.url}</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">{audit.url}</h2>
             <p className="text-sm text-muted-foreground">
               Audited on {new Date(audit.created_at).toLocaleDateString()} at{" "}
               {new Date(audit.created_at).toLocaleTimeString()}
             </p>
           </div>
           <div className="text-right animate-bounce-in">
-            <div className={`text-5xl font-bold ${getScoreColor(audit.overall_score)} animate-glow-pulse`}>
+            <div className={`text-5xl md:text-6xl font-extrabold ${getScoreColor(audit.overall_score)}`}>
               <ScoreCounter target={audit.overall_score} duration={1500} />
             </div>
-            <Badge variant="secondary" className="mt-2 animate-fade-in">
+            <Badge variant="secondary" className="mt-2 px-3 py-1 text-sm animate-fade-in">
               {getScoreLabel(audit.overall_score)}
             </Badge>
           </div>
         </div>
 
-        <div className="flex gap-2 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+        <div className="flex gap-3 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
           <Button 
             variant="outline" 
             size="sm" 
-            className="gap-2 hover-lift transition-all duration-300 hover:border-primary/50 hover:shadow-glow-sm group"
+            className="gap-2 hover-lift transition-all duration-300 hover:border-primary/50 rounded-full px-4"
             onClick={handleExportPDF}
             disabled={isExporting}
           >
-            <Download className="h-4 w-4 transition-transform group-hover:-translate-y-1" />
+            <Download className="h-4 w-4" />
             {isExporting ? "Exporting..." : "Export PDF"}
           </Button>
           {onDelete && (
             <Button 
               variant="outline" 
               size="sm" 
-              className="gap-2 text-destructive hover:bg-destructive/10 hover-lift transition-all duration-300 group"
+              className="gap-2 text-destructive hover:bg-destructive/10 hover:border-destructive/50 hover-lift transition-all duration-300 rounded-full px-4"
               onClick={onDelete}
             >
-              <Trash2 className="h-4 w-4 transition-transform group-hover:rotate-12" />
+              <Trash2 className="h-4 w-4" />
               Delete
             </Button>
           )}
@@ -134,15 +134,15 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
           return (
             <Card 
               key={key}
-              className="p-6 glass border-gradient-animated hover-lift hover-glow group cursor-pointer transition-all duration-300"
+              className="p-6 border shadow-card hover-lift group cursor-pointer transition-all duration-300"
               style={{ 
                 animationDelay: `${index * 0.1}s`,
                 animationFillMode: 'both'
               }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors duration-300">
-                  <Icon className="h-5 w-5 text-primary transition-transform group-hover:scale-110 group-hover:rotate-12" />
+                <div className="p-2.5 rounded-xl bg-gradient-primary-subtle group-hover:bg-gradient-primary transition-all duration-300">
+                  <Icon className="h-5 w-5 text-primary group-hover:text-white transition-colors" />
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold group-hover:text-primary transition-colors">{label}</h3>
@@ -151,9 +151,12 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
                   </p>
                 </div>
               </div>
-              <Progress value={score} className="h-2 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-primary to-primary-glow transition-all duration-1000 shimmer" style={{ width: `${score}%` }} />
-              </Progress>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-primary transition-all duration-1000 rounded-full" 
+                  style={{ width: `${score}%` }} 
+                />
+              </div>
             </Card>
           );
         })}
@@ -165,72 +168,90 @@ export const AuditResults = ({ audit, onDelete }: AuditResultsProps) => {
         className={`grid grid-cols-1 lg:grid-cols-3 gap-4 scroll-reveal ${findingsScroll.isVisible ? 'revealed' : ''}`}
       >
         {/* Positive Findings */}
-        <Card className="p-6 glass hover-lift group transition-all duration-300" style={{ animationDelay: '0s' }}>
-          <div className="flex items-center gap-2 mb-4">
-            <CheckCircle2 className="h-5 w-5 text-success animate-bounce-in transition-transform group-hover:scale-110" />
-            <h3 className="font-semibold text-success">What's Working</h3>
-          </div>
-          <ul className="space-y-2">
-            {findings.positive.map((item: string, index: number) => (
-              <li 
-                key={index} 
-                className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
-                style={{ 
-                  animationDelay: `${index * 0.1}s`,
-                  animationFillMode: 'both'
-                }}
-              >
-                <span className="text-success mt-1 font-bold">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        <Card className="p-6 border shadow-card hover-lift group transition-all duration-300" style={{ animationDelay: '0s' }}>
+          <CardHeader className="p-0 pb-4">
+            <CardTitle className="flex items-center gap-3 text-lg">
+              <div className="p-2 rounded-lg bg-success/10">
+                <CheckCircle2 className="h-5 w-5 text-success" />
+              </div>
+              What's Working
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ul className="space-y-3">
+              {findings.positive.map((item: string, index: number) => (
+                <li 
+                  key={index} 
+                  className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`,
+                    animationFillMode: 'both'
+                  }}
+                >
+                  <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
         </Card>
 
         {/* Issues */}
-        <Card className="p-6 glass hover-lift group transition-all duration-300" style={{ animationDelay: '0.1s' }}>
-          <div className="flex items-center gap-2 mb-4">
-            <AlertCircle className="h-5 w-5 text-destructive animate-bounce-in transition-transform group-hover:scale-110" />
-            <h3 className="font-semibold text-destructive">Issues Found</h3>
-          </div>
-          <ul className="space-y-2">
-            {findings.issues.map((item: string, index: number) => (
-              <li 
-                key={index} 
-                className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
-                style={{ 
-                  animationDelay: `${index * 0.1}s`,
-                  animationFillMode: 'both'
-                }}
-              >
-                <span className="text-destructive mt-1 font-bold">✗</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        <Card className="p-6 border shadow-card hover-lift group transition-all duration-300" style={{ animationDelay: '0.1s' }}>
+          <CardHeader className="p-0 pb-4">
+            <CardTitle className="flex items-center gap-3 text-lg">
+              <div className="p-2 rounded-lg bg-destructive/10">
+                <AlertCircle className="h-5 w-5 text-destructive" />
+              </div>
+              Issues Found
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ul className="space-y-3">
+              {findings.issues.map((item: string, index: number) => (
+                <li 
+                  key={index} 
+                  className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`,
+                    animationFillMode: 'both'
+                  }}
+                >
+                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
         </Card>
 
         {/* Recommendations */}
-        <Card className="p-6 glass hover-lift group transition-all duration-300" style={{ animationDelay: '0.2s' }}>
-          <div className="flex items-center gap-2 mb-4">
-            <Lightbulb className="h-5 w-5 text-warning animate-bounce-in transition-transform group-hover:scale-110" />
-            <h3 className="font-semibold text-warning">Recommendations</h3>
-          </div>
-          <ul className="space-y-2">
-            {findings.recommendations.map((item: string, index: number) => (
-              <li 
-                key={index} 
-                className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
-                style={{ 
-                  animationDelay: `${index * 0.1}s`,
-                  animationFillMode: 'both'
-                }}
-              >
-                <span className="text-warning mt-1 font-bold">→</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
+        <Card className="p-6 border shadow-card hover-lift group transition-all duration-300" style={{ animationDelay: '0.2s' }}>
+          <CardHeader className="p-0 pb-4">
+            <CardTitle className="flex items-center gap-3 text-lg">
+              <div className="p-2 rounded-lg bg-warning/10">
+                <Lightbulb className="h-5 w-5 text-warning" />
+              </div>
+              Recommendations
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ul className="space-y-3">
+              {findings.recommendations.map((item: string, index: number) => (
+                <li 
+                  key={index} 
+                  className="text-sm text-muted-foreground flex items-start gap-2 opacity-0 animate-fade-in hover:text-foreground transition-colors"
+                  style={{ 
+                    animationDelay: `${index * 0.1}s`,
+                    animationFillMode: 'both'
+                  }}
+                >
+                  <Lightbulb className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
         </Card>
       </div>
     </div>

@@ -7,7 +7,6 @@ import { Sparkles, LogOut, Settings } from "lucide-react";
 import { AuditForm } from "@/components/AuditForm";
 import { AuditResults } from "@/components/AuditResults";
 import { AuditHistory } from "@/components/AuditHistory";
-import { FloatingOrbs } from "@/components/ui/floating-orbs";
 import { UserAvatar } from "@/components/UserAvatar";
 import { UserProfile } from "@/components/UserProfile";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -101,17 +100,30 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 bg-gradient-animated" />
-      <div className="fixed inset-0 bg-gradient-mesh opacity-50" />
-      <FloatingOrbs />
+      {/* Background decorations */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 right-0 w-[800px] h-[800px] opacity-[0.04]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-start)) 0%, transparent 70%)'
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-0 w-[600px] h-[600px] opacity-[0.04]"
+          style={{
+            background: 'radial-gradient(circle, hsl(var(--gradient-end)) 0%, transparent 70%)'
+          }}
+        />
+      </div>
       
       {/* Header */}
-      <header className="relative z-10 border-b border-border/50 glass-strong">
+      <header className="relative z-10 border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 animate-slide-up">
-            <Sparkles className="h-6 w-6 text-primary animate-glow-pulse" />
-            <h1 className="text-xl font-bold bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+          <div className="flex items-center gap-3 animate-slide-up">
+            <div className="p-2 rounded-lg bg-gradient-primary shadow-sm">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-gradient-primary">
               Landing Page Auditor Pro
             </h1>
           </div>
@@ -119,7 +131,7 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-auto p-1 hover:bg-white/10 rounded-full transition-all duration-300 hover:ring-2 hover:ring-primary/50">
+                <Button variant="ghost" className="h-auto p-1 hover:bg-muted rounded-full transition-all duration-300 hover:ring-2 hover:ring-primary/30">
                   <UserAvatar
                     avatarUrl={profile?.avatar_url}
                     displayName={profile?.display_name}
@@ -127,19 +139,19 @@ const Index = () => {
                   />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass-strong border-border/50">
+              <DropdownMenuContent align="end" className="w-56 border shadow-lg">
                 <DropdownMenuLabel>
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">{profile?.display_name || "User"}</p>
                     <p className="text-xs text-muted-foreground">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-border/50" />
-                <DropdownMenuItem onClick={() => setProfileOpen(true)} className="cursor-pointer hover:bg-primary/10">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setProfileOpen(true)} className="cursor-pointer hover:bg-muted">
                   <Settings className="mr-2 h-4 w-4" />
                   Edit Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer hover:bg-destructive/10">
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer hover:bg-destructive/10 text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>
@@ -154,10 +166,11 @@ const Index = () => {
         {/* Hero Section */}
         {!selectedAudit && (
           <div className="text-center mb-12 space-y-4 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 animate-float bg-gradient-to-r from-foreground via-primary-glow to-foreground bg-clip-text text-transparent pb-6">
-              Boost Your Landing Page Performance
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
+              Boost Your{" "}
+              <span className="text-gradient-primary">Landing Page Performance</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in leading-relaxed" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
               Get comprehensive insights on conversion optimization, UX/UI, SEO, 
               performance, and compliance powered by AI
             </p>
@@ -176,7 +189,7 @@ const Index = () => {
           <div className="animate-fade-in">
             <Button
               variant="outline"
-              className="mb-6 hover-lift transition-all duration-300 hover:border-primary/50 hover:shadow-glow-sm glass"
+              className="mb-6 hover-lift transition-all duration-300 hover:border-primary/50 rounded-full px-6"
               onClick={() => setSelectedAudit(null)}
             >
               ← Back to History
