@@ -177,14 +177,27 @@ export async function exportRiskSnapshotToPDF(data: SnapshotData): Promise<boole
   
   // Risk level badge
   const [r, g, b] = getRiskColor(data.overall_risk);
-  doc.setFillColor(r, g, b);
-  doc.roundedRect(margin + 10, yPos + 3, 35, 10, 2, 2, "F");
+  const riskText = data.overall_risk.toUpperCase() + " RISK";
   
+  // Set font BEFORE measuring text width
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
-  const riskText = data.overall_risk.toUpperCase() + " RISK";
-  doc.text(riskText, margin + 27.5 - doc.getTextWidth(riskText) / 2 + 10, yPos + 10);
+  
+  // Calculate badge width based on actual text width + padding
+  const textWidth = doc.getTextWidth(riskText);
+  const badgePadding = 16;
+  const badgeWidth = textWidth + badgePadding;
+  const badgeX = margin + 10;
+  const badgeY = yPos + 3;
+  
+  // Draw badge
+  doc.setFillColor(r, g, b);
+  doc.roundedRect(badgeX, badgeY, badgeWidth, 10, 3, 3, "F");
+  
+  // Center text within badge
+  const textX = badgeX + (badgeWidth / 2) - (textWidth / 2);
+  doc.text(riskText, textX, yPos + 10);
   
   yPos += 25;
 
