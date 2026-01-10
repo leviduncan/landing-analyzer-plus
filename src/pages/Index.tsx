@@ -115,51 +115,6 @@ const Index = () => {
           }}
         />
       </div>
-      
-      {/* Header */}
-      <header className="relative z-10 border-b border-border bg-card/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 animate-slide-up">
-            <div className="p-2 rounded-lg bg-gradient-primary shadow-sm">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gradient-primary">
-              Landing Page Auditor Pro
-            </h1>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-auto p-1 hover:bg-muted rounded-full transition-all duration-300 hover:ring-2 hover:ring-primary/30">
-                  <UserAvatar
-                    avatarUrl={profile?.avatar_url}
-                    displayName={profile?.display_name}
-                    email={user?.email}
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 border shadow-lg">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">{profile?.display_name || "User"}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setProfileOpen(true)} className="cursor-pointer hover:bg-muted">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Edit Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer hover:bg-destructive/10 text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </header>
 
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-4 py-12">

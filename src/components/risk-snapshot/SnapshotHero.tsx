@@ -38,7 +38,7 @@ export function SnapshotHero() {
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Get a signals-based diagnostic of your landing page's performance, SEO, 
-          accessibility, and conversion readiness — no login required.
+          accessibility, and conversion readiness.
         </p>
       </div>
     </header>
