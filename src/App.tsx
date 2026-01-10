@@ -16,7 +16,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/risk-snapshot" replace />} />
+          <Route path="/" element={<Navigate to="/" replace />} />
           <Route path="/risk-snapshot" element={<RiskSnapshot />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
